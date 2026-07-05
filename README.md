@@ -199,33 +199,6 @@ scikit-image==0.22.0
 ### 🚀 Hướng dẫn sử dụng mô hình Phân loại (Coder 3)
 
 #### 1. Huấn luyện lại hoặc chạy khảo sát qua Notebook
+
 ```bash
 jupyter notebook notebooks/03_classification.ipynb
-
-### 🚀 Sử dụng tích hợp mô hình đã huấn luyện (Inference Demo)
-
-
-```python
-import joblib
-import cv2
-from src.features import extract_orb, image_to_bow_hist
-
-# 1. Tải (Load) pipeline mô hình của Coder 3
-codebook = joblib.load("models/orb_codebook.pkl")
-scaler = joblib.load("models/scaler.pkl")
-svm = joblib.load("models/svm_classifier.pkl")
-label_encoder = joblib.load("models/label_encoder.pkl")
-
-# 2. Đọc ảnh biển báo (Ví dụ: ảnh được cắt ra từ pipeline của Coder 2)
-img = cv2.imread("data/cropped/cam_di_nguoc_chieu/001.jpg")
-_, descriptors = extract_orb(img)
-
-# 3. Chuyển đổi sang biểu diễn Bag of Words (BoW) & Chuẩn hóa dữ liệu
-hist = image_to_bow_hist(descriptors, codebook).reshape(1, -1)
-hist_scaled = scaler.transform(hist)
-
-# 4. Dự đoán nhãn lớp biển báo ứng với mô hình SVM
-pred_code = svm.predict(hist_scaled)
-predicted_class = label_encoder.inverse_transform(pred_code)
-
-print(f"Biển báo được nhận diện là: {predicted_class[0]}")
