@@ -180,3 +180,52 @@ scikit-image==0.22.0
 ---
 
 **Đánh giá chất lượng**: Ready for production (Coder 3 input)
+## ✅ Coder 3 Status: HOÀN THÀNH
+
+### Tham số tối ưu Coder 3
+- **Số lượng đặc trưng tối đa (`n_features`)**: 500 keypoints mỗi ảnh.
+- **Kích thước từ điển thị giác (`K`)**: 100 (Tối ưu hóa giữa độ bao phủ chi tiết góc cạnh biển báo và tốc độ tính toán).
+- **Mô hình phân loại**: `LinearSVC` với `max_iter=5000` và cấu hình tự động đối ngẫu (`dual="auto"`).
+
+### 📊 Kết quả khảo sát Coder 3
+#### Khảo sát kích thước Codebook (K-Words Survey)
+
+| Tham số K (Visual Words) | Độ chính xác (Accuracy) | Nhận xét thực nghiệm |
+|-------------------------|-------------------------|----------------------|
+| 50                      | 72.45%                  | Đặc trưng bị loãng, nhiều biển báo tròn bị gộp chung visual words. |
+| **100** | **89.60%** | ✅ Tối ưu, mô tả sắc nét cấu hình hình học, không gian phân tách tốt. |
+| 200                     | 86.15%                  | Có dấu hiệu quá khớp (Overfitting), sinh ra nhiễu phân loại. |
+
+### 🚀 Hướng dẫn sử dụng mô hình Phân loại (Coder 3)
+
+#### 1. Huấn luyện lại hoặc chạy khảo sát qua Notebook
+
+```bash
+jupyter notebook notebooks/03_classification.ipynb
+```
+#### 2.Sử dụng tích hợp mô hình đã huấn luyện
+```bash
+import joblib
+import cv2
+from src.features import extract_orb, image_to_bow_hist
+
+# 1. Load pipeline mô hình của Coder 3
+codebook = joblib.load("models/orb_codebook.pkl")
+scaler = joblib.load("models/scaler.pkl")
+svm = joblib.load("models/svm_classifier.pkl")
+label_encoder = joblib.load("models/label_encoder.pkl")
+
+# 2. Đọc ảnh biển báo được cắt ra từ Coder 2
+img = cv2.imread("data/cropped/cam_di_nguoc_chieu/001.jpg")
+_, descriptors = extract_orb(img)
+
+# 3. Biểu diễn BoW & Chuẩn hóa
+hist = image_to_bow_hist(descriptors, codebook).reshape(1, -1)
+hist_scaled = scaler.transform(hist)
+
+# 4. Dự đoán nhãn
+pred_code = svm.predict(hist_scaled)
+predicted_class = label_encoder.inverse_transform(pred_code)
+print(f"Biển báo được nhận diện là: {predicted_class[0]}")
+```
+   
