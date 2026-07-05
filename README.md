@@ -202,3 +202,4 @@ scikit-image==0.22.0
 
 ```bash
 jupyter notebook notebooks/03_classification.ipynb
+   
