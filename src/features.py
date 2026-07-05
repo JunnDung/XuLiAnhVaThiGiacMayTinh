@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
+from skimage.feature import hog
 
 
 def extract_orb(image, n_features=500):
@@ -118,3 +119,14 @@ def train_svm_bow(X_train, y_train):
     svm.fit(X_train, y_train)
 
     return scaler, svm
+def extract_hog(image, resize=(64, 64)):
+    """Phương án B: Trích xuất đặc trưng HOG theo yêu cầu bắt buộc của Roadmap"""
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    resized = cv2.resize(gray, resize)
+    # Các tham số orientations, pixels_per_cell lấy theo chuẩn chương 5
+    features, hog_image = hog(resized, orientations=9, pixels_per_cell=(8, 8),
+                              cells_per_block=(2, 2), visualize=True, feature_vector=True)
+    return features, hog_image
