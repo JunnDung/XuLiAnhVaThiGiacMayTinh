@@ -1,0 +1,6 @@
+path: D:/prj new/NhanDienBienBaoGiaoThong-main/NhanDienBienBaoGiaoThong-main/data_detector
+train: splits/train.txt
+val: splits/val.txt
+test: splits/test.txt
+nc: 1
+names: ['traffic_sign']

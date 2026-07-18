@@ -1,0 +1,13 @@
+﻿__pycache__/
+*.pyc
+streamlit.stdout.log
+streamlit.stderr.log
+svm_model.joblib
+yolo11n.pt
+runs/
+reports/
+data/*
+!data/.gitkeep
+data_detector/
+Ultralytics/
+.agents/
